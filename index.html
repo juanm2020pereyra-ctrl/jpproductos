@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>JP Productos</title>
+
+<style>
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #f4f4f4;
+}
+
+header {
+  background: #111;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.container {
+  padding: 20px;
+  text-align: center;
+}
+
+input {
+  padding: 8px;
+  margin: 5px;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.agregar {
+  background: green;
+  color: white;
+}
+
+.producto {
+  background: white;
+  margin: 10px;
+  padding: 15px;
+  border-radius: 10px;
+  display: inline-block;
+  width: 220px;
+}
+
+.producto img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.eliminar {
+  background: red;
+  color: white;
+  margin-top: 5px;
+}
+
+.whatsapp {
+  background: #25D366;
+  color: white;
+  margin-top: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1 contenteditable="true">JP Productos</h1>
+<p contenteditable="true">Tu tienda online</p>
+</header>
+
+<div class="container">
+
+<h2>Agregar Producto</h2>
+
+<input type="text" id="nombre" placeholder="Nombre">
+<input type="number" id="precio" placeholder="Precio">
+<input type="text" id="imagen" placeholder="URL de imagen">
+
+<br>
+
+<button class="agregar" onclick="agregarProducto()">Agregar</button>
+
+<h2>Productos</h2>
+<div id="lista"></div>
+
+</div>
+
+<script>
+let lista = document.getElementById("lista");
+
+// Cargar productos guardados
+window.onload = function() {
+  let guardados = localStorage.getItem("productos");
+  if (guardados) {
+    lista.innerHTML = guardados;
+  }
+};
+
+function guardar() {
+  localStorage.setItem("productos", lista.innerHTML);
+}
+
+function agregarProducto() {
+  let nombre = document.getElementById("nombre").value;
+  let precio = document.getElementById("precio").value;
+  let imagen = document.getElementById("imagen").value;
+
+  if (!nombre || !precio || !imagen) {
+    alert("Completa todo");
+    return;
+  }
+
+  let producto = document.createElement("div");
+  producto.className = "producto";
+
+  producto.innerHTML = `
+    <img src="${imagen}">
+    <h3 contenteditable="true">${nombre}</h3>
+    <p contenteditable="true">$${precio}</p>
+
+    <button class="whatsapp" onclick="comprar('${nombre}', '${precio}')">
+      Comprar por WhatsApp
+    </button>
+
+    <br>
+    <button class="eliminar" onclick="eliminar(this)">Eliminar</button>
+  `;
+
+  lista.appendChild(producto);
+  guardar();
+
+  document.getElementById("nombre").value = "";
+  document.getElementById("precio").value = "";
+  document.getElementById("imagen").value = "";
+}
+
+function eliminar(boton) {
+  boton.parentElement.remove();
+  guardar();
+}
+
+function comprar(nombre, precio) {
+  let numero = "5492215237455"; // CAMBIÁ ESTO POR TU NÚMERO
+  let mensaje = `Hola, quiero comprar ${nombre} por $${precio}`;
+  let url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url);
+}
+</script>
+
+</body>
+</html>
