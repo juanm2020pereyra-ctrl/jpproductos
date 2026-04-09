@@ -20,7 +20,6 @@ header {
   font-size: 28px;
 }
 
-/* LOGIN */
 .login {
   text-align: center;
   margin: 20px;
@@ -42,13 +41,11 @@ button {
   cursor: pointer;
 }
 
-/* PANEL */
 .panel {
   display: none;
   text-align: center;
 }
 
-/* AUTOS */
 .autos {
   display: flex;
   flex-wrap: wrap;
@@ -97,7 +94,7 @@ button {
 
 <div class="login">
 <h3>Acceso administrador</h3>
-<input type="file" id="imagen" accept="image/*">
+<input type="password" id="clave" placeholder="Clave">
 <br>
 <button onclick="login()">Entrar</button>
 </div>
@@ -110,7 +107,11 @@ button {
 <input type="text" id="anio" placeholder="Año">
 <input type="text" id="km" placeholder="Kilómetros">
 <input type="number" id="precio" placeholder="Precio">
-<input type="text" id="imagen" placeholder="URL de imagen">
+
+<br><br>
+
+<!-- FOTO DESDE GALERÍA -->
+<input type="file" id="imagen" accept="image/*">
 
 <br><br>
 
@@ -124,8 +125,8 @@ button {
 <script>
 let lista = document.getElementById("lista");
 
-// CLAVE (podés cambiarla)
-let claveCorrecta = "juanmar0808";
+// CAMBIÁ TU CLAVE
+let claveCorrecta = "1234";
 
 function login() {
   let clave = document.getElementById("clave").value;
@@ -153,29 +154,24 @@ function agregarAuto() {
   let anio = document.getElementById("anio").value;
   let km = document.getElementById("km").value;
   let precio = document.getElementById("precio").value;
+
   let file = document.getElementById("imagen").files[0];
 
-if (!file) {
-  alert("Subí una imagen");
-  return;
-}
-
-let reader = new FileReader();
-
-reader.onload = function(e) {
-  let imagen = e.target.result;
-
-  crearAuto(imagen);
-};
-
-reader.readAsDataURL(file);
-return;
-
-  if (!marca || !anio || !km || !precio || !imagen) {
+  if (!marca || !anio || !km || !precio || !file) {
     alert("Completa todo");
     return;
   }
 
+  let reader = new FileReader();
+
+  reader.onload = function(e) {
+    crearAuto(e.target.result, marca, anio, km, precio);
+  };
+
+  reader.readAsDataURL(file);
+}
+
+function crearAuto(imagen, marca, anio, km, precio) {
   let auto = document.createElement("div");
   auto.className = "auto";
 
@@ -203,7 +199,7 @@ function eliminar(boton) {
 }
 
 function comprar(marca, precio) {
-  let numero = "5492215237455"; // TU NUMERO
+  let numero = "549XXXXXXXXXX"; // TU NUMERO
   let mensaje = `Hola, quiero consultar por ${marca} (${precio})`;
   let url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
   window.open(url);
