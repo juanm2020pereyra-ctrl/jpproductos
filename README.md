@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>JP Productos</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #eef1f5;
+}
+
+/* HEADER */
+header {
+  background: #111;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+/* CONTENIDO */
+.container {
+  padding: 20px;
+  text-align: center;
+}
+
+/* INPUTS */
+input {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* BOTONES */
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.agregar {
+  background: #28a745;
+  color: white;
+}
+
+.buscar {
+  background: #007bff;
+  color: white;
+}
+
+/* PRODUCTOS */
+.productos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.producto {
+  background: white;
+  margin: 10px;
+  padding: 15px;
+  border-radius: 12px;
+  width: 220px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.producto:hover {
+  transform: translateY(-5px);
+}
+
+.producto img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.precio {
+  font-size: 18px;
+  color: #28a745;
+  font-weight: bold;
+}
+
+/* BOTONES PRODUCTO */
+.whatsapp {
+  background: #25D366;
+  color: white;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.eliminar {
+  background: red;
+  color: white;
+  width: 100%;
+  margin-top: 5px;
+}
+
+/* BUSCADOR */
+#buscador {
+  width: 200px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">🛒 JP Productos</div>
+<p>Tu tienda online</p>
+</header>
+
+<div class="container">
+
+<h2>Agregar Producto</h2>
+
+<input type="text" id="nombre" placeholder="Nombre">
+<input type="number" id="precio" placeholder="Precio">
+<input type="text" id="imagen" placeholder="URL de imagen">
+
+<br><br>
+
+<button class="agregar" onclick="agregarProducto()">Agregar</button>
+
+<hr>
+
+<h2>Buscar Producto</h2>
+
+<input type="text" id="buscador" placeholder="Buscar...">
+<button class="buscar" onclick="buscarProducto()">Buscar</button>
+
+<h2>Productos</h2>
+<div id="lista" class="productos"></div>
+
+</div>
+
+<script>
+let lista = document.getElementById("lista");
+
+window.onload = function() {
+  let guardados = localStorage.getItem("productos");
+  if (guardados) {
+    lista.innerHTML = guardados;
+  }
+};
+
+function guardar() {
+  localStorage.setItem("productos", lista.innerHTML);
+}
+
+function agregarProducto() {
+  let nombre = document.getElementById("nombre").value;
+  let precio = document.getElementById("precio").value;
+  let imagen = document.getElementById("imagen").value;
+
+  if (!nombre || !precio || !imagen) {
+    alert("Completa todo");
+    return;
+  }
+
+  let producto = document.createElement("div");
+  producto.className = "producto";
+
+  producto.innerHTML = `
+    <img src="${imagen}">
+    <h3>${nombre}</h3>
+    <p class="precio">$${precio}</p>
+
+    <button class="whatsapp" onclick="comprar('${nombre}', '${precio}')">
+      Comprar por WhatsApp
+    </button>
+
+    <button class="eliminar" onclick="eliminar(this)">Eliminar</button>
+  `;
+
+  lista.appendChild(producto);
+  guardar();
+
+  document.getElementById("nombre").value = "";
+  document.getElementById("precio").value = "";
+  document.getElementById("imagen").value = "";
+}
+
+function eliminar(boton) {
+  boton.parentElement.remove();
+  guardar();
+}
+
+function comprar(nombre, precio) {
+  let numero = "5492215237455"; // TU NUMERO
+  let mensaje = `Hola, quiero comprar ${nombre} por $${precio}`;
+  let url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url);
+}
+
+function buscarProducto() {
+  let filtro = document.getElementById("buscador").value.toLowerCase();
+  let productos = document.getElementsByClassName("producto");
+
+  for (let i = 0; i < productos.length; i++) {
+    let texto = productos[i].innerText.toLowerCase();
+    productos[i].style.display = texto.includes(filtro) ? "" : "none";
+  }
+}
+</script>
+
+</body>
+</html>
