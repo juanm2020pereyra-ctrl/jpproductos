@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>JP Store</title>
+<title>JP Autos</title>
 
 <style>
 body {
@@ -11,9 +11,7 @@ body {
   background: #eef1f5;
   font-size: 18px;
 }
-}
 
-/* HEADER */
 header {
   background: #111;
   color: white;
@@ -22,26 +20,12 @@ header {
   font-size: 28px;
 }
 
-/* BOTON WHATSAPP FIJO */
-.whatsapp-fijo {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #25D366;
-  color: white;
-  padding: 15px;
-  border-radius: 50%;
-  font-size: 20px;
-  text-decoration: none;
-}
-
-/* CONTENIDO */
-.container {
-  padding: 20px;
+/* LOGIN */
+.login {
   text-align: center;
+  margin: 20px;
 }
 
-/* INPUTS */
 input {
   padding: 12px;
   margin: 5px;
@@ -50,59 +34,52 @@ input {
   border: 1px solid #ccc;
 }
 
-/* BOTONES */
 button {
   padding: 15px;
   font-size: 16px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 15px;
 }
 
-.agregar {
-  background: #28a745;
-  color: white;
+/* PANEL */
+.panel {
+  display: none;
+  text-align: center;
 }
 
-.config {
-  background: #007bff;
-  color: white;
-}
-
-/* PRODUCTOS */
-.productos {
+/* AUTOS */
+.autos {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.producto {
+.auto {
   background: white;
   margin: 20px;
   padding: 20px;
   border-radius: 15px;
-  width: 300px;
+  width: 320px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.producto img {
+.auto img {
   width: 100%;
   border-radius: 10px;
 }
 
 .precio {
-  font-size: 20px;
-  color: #28a745;
+  font-size: 22px;
+  color: green;
   font-weight: bold;
 }
 
-/* BOTONES PRODUCTO */
 .whatsapp {
   background: #25D366;
   color: white;
   width: 100%;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 .eliminar {
@@ -111,103 +88,96 @@ button {
   width: 100%;
   margin-top: 5px;
 }
-
-/* CONFIG PANEL */
-.panel {
-  display: none;
-  background: white;
-  padding: 15px;
-  margin: 15px;
-  border-radius: 10px;
-}
 </style>
 </head>
 
 <body>
 
-<header>
-🛒 JP Store - Tienda Online
-</header>
+<header>🚗 JP Autos - Venta de Vehículos</header>
 
-<a class="whatsapp-fijo" href="#" onclick="atencion()">💬</a>
-
-<div class="container">
-
-<button class="config" onclick="togglePanel()">⚙️ Configuración</button>
-
-<div class="panel" id="panel">
-<h3>Configuración</h3>
-<input type="text" id="numero" placeholder="Número WhatsApp">
-<button onclick="guardarNumero()">Guardar número</button>
+<div class="login">
+<h3>Acceso administrador</h3>
+<input type="password" id="clave" placeholder="Clave">
+<br>
+<button onclick="login()">Entrar</button>
 </div>
 
-<h2>Agregar Producto</h2>
+<div class="panel" id="panel">
 
-<input type="text" id="nombre" placeholder="Nombre">
+<h2>Publicar Auto</h2>
+
+<input type="text" id="marca" placeholder="Marca y modelo">
+<input type="text" id="anio" placeholder="Año">
+<input type="text" id="km" placeholder="Kilómetros">
 <input type="number" id="precio" placeholder="Precio">
 <input type="text" id="imagen" placeholder="URL de imagen">
 
 <br><br>
 
-<button class="agregar" onclick="agregarProducto()">Agregar</button>
-
-<h2>Productos</h2>
-<div id="lista" class="productos"></div>
+<button onclick="agregarAuto()">Publicar</button>
 
 </div>
+
+<h2 style="text-align:center;">Autos disponibles</h2>
+<div id="lista" class="autos"></div>
 
 <script>
 let lista = document.getElementById("lista");
 
-// cargar datos
-window.onload = function() {
-  let guardados = localStorage.getItem("productos");
-  let numero = localStorage.getItem("numero");
+// CLAVE (podés cambiarla)
+let claveCorrecta = "juanmar0808";
 
+function login() {
+  let clave = document.getElementById("clave").value;
+
+  if (clave === claveCorrecta) {
+    document.getElementById("panel").style.display = "block";
+    alert("Bienvenido");
+  } else {
+    alert("Clave incorrecta");
+  }
+}
+
+// Cargar autos
+window.onload = function() {
+  let guardados = localStorage.getItem("autos");
   if (guardados) lista.innerHTML = guardados;
-  if (numero) document.getElementById("numero").value = numero;
 };
 
 function guardar() {
-  localStorage.setItem("productos", lista.innerHTML);
+  localStorage.setItem("autos", lista.innerHTML);
 }
 
-function guardarNumero() {
-  let numero = document.getElementById("numero").value;
-  localStorage.setItem("numero", numero);
-  alert("Número guardado");
-}
-
-function getNumero() {
-  return localStorage.getItem("numero") || "549XXXXXXXXXX";
-}
-
-function agregarProducto() {
-  let nombre = document.getElementById("nombre").value;
+function agregarAuto() {
+  let marca = document.getElementById("marca").value;
+  let anio = document.getElementById("anio").value;
+  let km = document.getElementById("km").value;
   let precio = document.getElementById("precio").value;
   let imagen = document.getElementById("imagen").value;
 
-  if (!nombre || !precio || !imagen) {
+  if (!marca || !anio || !km || !precio || !imagen) {
     alert("Completa todo");
     return;
   }
 
-  let producto = document.createElement("div");
-  producto.className = "producto";
+  let auto = document.createElement("div");
+  auto.className = "auto";
 
-  producto.innerHTML = `
+  auto.innerHTML = `
     <img src="${imagen}">
-    <h3>${nombre}</h3>
+    <h3>${marca}</h3>
+    <p>Año: ${anio}</p>
+    <p>Kilómetros: ${km}</p>
     <p class="precio">$${precio}</p>
 
-    <button class="whatsapp" onclick="comprar('${nombre}', '${precio}')">
-      Comprar por WhatsApp
+    <button class="whatsapp" onclick="comprar('${marca}', '${precio}')">
+      Consultar por WhatsApp
     </button>
 
     <button class="eliminar" onclick="eliminar(this)">Eliminar</button>
   `;
 
-  lista.appendChild(producto);
+  lista.appendChild(auto);
   guardar();
 }
 
@@ -216,21 +186,11 @@ function eliminar(boton) {
   guardar();
 }
 
-function comprar(nombre, precio) {
-  let numero = getNumero();
-  let mensaje = `Hola, quiero comprar ${nombre} por $${precio}`;
+function comprar(marca, precio) {
+  let numero = "5492215237455"; // TU NUMERO
+  let mensaje = `Hola, quiero consultar por ${marca} (${precio})`;
   let url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
   window.open(url);
-}
-
-function atencion() {
-  let numero = getNumero();
-  window.open(`https://wa.me/${numero}`);
-}
-
-function togglePanel() {
-  let panel = document.getElementById("panel");
-  panel.style.display = panel.style.display === "none" ? "block" : "none";
 }
 </script>
 
