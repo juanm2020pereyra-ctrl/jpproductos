@@ -97,7 +97,7 @@ button {
 
 <div class="login">
 <h3>Acceso administrador</h3>
-<input type="password" id="clave" placeholder="Clave">
+<input type="file" id="imagen" accept="image/*">
 <br>
 <button onclick="login()">Entrar</button>
 </div>
@@ -153,7 +153,23 @@ function agregarAuto() {
   let anio = document.getElementById("anio").value;
   let km = document.getElementById("km").value;
   let precio = document.getElementById("precio").value;
-  let imagen = document.getElementById("imagen").value;
+  let file = document.getElementById("imagen").files[0];
+
+if (!file) {
+  alert("Subí una imagen");
+  return;
+}
+
+let reader = new FileReader();
+
+reader.onload = function(e) {
+  let imagen = e.target.result;
+
+  crearAuto(imagen);
+};
+
+reader.readAsDataURL(file);
+return;
 
   if (!marca || !anio || !km || !precio || !imagen) {
     alert("Completa todo");
